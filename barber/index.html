@@ -1,92 +1,51 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sharp Line Barbers</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sharp Line Barbers · Booking assistant (demo)</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#eee;background:#111}
-nav{display:flex;justify-content:space-between;align-items:center;padding:18px 6vw;position:sticky;top:0;background:rgba(17,17,17,.95);z-index:10;border-bottom:1px solid #222}
-nav b{font-size:20px;letter-spacing:2px}nav b span{color:#d4a24c}nav div a{margin-left:22px;color:#ccc;text-decoration:none;font-size:14px;text-transform:uppercase;letter-spacing:1px}
-.hero{min-height:82vh;display:flex;align-items:center;padding:0 6vw;background:linear-gradient(100deg,rgba(0,0,0,.92) 35%,rgba(0,0,0,.4)),repeating-linear-gradient(45deg,#1b1b1b 0 22px,#151515 22px 44px)}
-.hero small{color:#d4a24c;letter-spacing:3px;text-transform:uppercase;font-size:13px}.hero h1{font-size:clamp(40px,7vw,80px);line-height:1;margin:14px 0;text-transform:uppercase;font-weight:800}
-.hero p{font-size:18px;color:#bbb;max-width:500px;margin-bottom:30px}
-.btn{display:inline-block;background:#d4a24c;color:#111;padding:15px 28px;text-decoration:none;font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:14px;margin-right:10px}.btn.alt{background:none;color:#fff;border:2px solid #fff}
-section{padding:80px 6vw}h2{font-size:36px;text-transform:uppercase;text-align:center;margin-bottom:10px}.sub{text-align:center;color:#999;margin-bottom:40px}
-.prices{max-width:800px;margin:auto}.row{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0;border-bottom:1px dashed #333}.row h3{font-size:19px}.row p{color:#888;font-size:14px;margin-top:4px}.row span{color:#d4a24c;font-size:22px;font-weight:700}
-.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px;max-width:1000px;margin:auto}.m{background:#1a1a1a;padding:30px;text-align:center;border-top:3px solid #d4a24c}.m .a{width:90px;height:90px;border-radius:50%;background:#2a2a2a;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:42px}.m p{color:#888;font-size:14px}
-.rv{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;max-width:1000px;margin:auto}.r{background:#1a1a1a;padding:26px}.r .s{color:#d4a24c}.r p{color:#ccc;margin:10px 0;font-style:italic}.r b{font-size:13px;color:#888}
-.cta{text-align:center;background:#d4a24c;color:#111}.cta h2{margin-bottom:14px}.cta p{margin-bottom:26px}.cta .btn{background:#111;color:#fff}
-.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;max-width:1000px;margin:auto}.info div{background:#1a1a1a;padding:26px}.info h3{color:#d4a24c;margin-bottom:8px;text-transform:uppercase;font-size:15px;letter-spacing:1px}.info p{color:#bbb;line-height:1.6}
-footer{text-align:center;padding:30px;color:#666;font-size:13px;border-top:1px solid #222}
-@media(max-width:720px){nav div{display:none}}
-</style></head><body>
-<nav><b>SHARP<span>LINE</span></b><div><a href="#prices">Prices</a><a href="#team">Team</a><a href="#book">Book</a></div></nav>
-<header class="hero"><div><small>Est. 2019 · Classic & modern cuts</small><h1>Look sharp.<br>Feel sharper.</h1><p>Precision fades, beard sculpting and hot towel shaves from barbers who take their craft seriously.</p><a class="btn" href="#book">Book now</a><a class="btn alt" href="#prices">See prices</a></div></header>
-<section id="prices"><h2>Services</h2><p class="sub">No surprises. Just great cuts.</p><div class="prices">
-<div class="row"><div><h3>Classic Haircut</h3><p>Consultation, cut, wash and style · 30 min</p></div><span>€15</span></div>
-<div class="row"><div><h3>Skin Fade</h3><p>Seamless fade with detailed finish · 40 min</p></div><span>€18</span></div>
-<div class="row"><div><h3>Beard Trim & Shape</h3><p>Line-up, trim and beard oil · 20 min</p></div><span>€10</span></div>
-<div class="row"><div><h3>Hot Towel Shave</h3><p>Traditional straight-razor shave · 30 min</p></div><span>€14</span></div>
-<div class="row"><div><h3>Cut + Beard Combo</h3><p>The full package · 50 min</p></div><span>€22</span></div>
-<div class="row"><div><h3>Kids Cut (under 12)</h3><p>Patient, friendly, fun · 20 min</p></div><span>€10</span></div>
-</div></section>
-<section id="team" style="background:#151515"><h2>The Barbers</h2><p class="sub">Years of experience, one standard.</p><div class="team">
-<div class="m"><div class="a">💈</div><h3>Alex</h3><p>Founder · Fades & tapers</p></div>
-<div class="m"><div class="a">✂️</div><h3>Niko</h3><p>Classic cuts & scissor work</p></div>
-<div class="m"><div class="a">🪒</div><h3>Viktor</h3><p>Beards & hot towel shaves</p></div>
-</div></section>
-<section><h2>Reviews</h2><p class="sub">4.9 average from 300+ clients</p><div class="rv">
-<div class="r"><div class="s">★★★★★</div><p>"Cleanest fade I've ever had. Booked my next one before I left."</p><b>Georgi T.</b></div>
-<div class="r"><div class="s">★★★★★</div><p>"The hot towel shave is a must. Proper old-school experience."</p><b>Martin D.</b></div>
-<div class="r"><div class="s">★★★★★</div><p>"Great vibe, on time, and they actually listen to what you want."</p><b>Ivan P.</b></div>
-</div></section>
-<section id="book" class="cta"><h2>Ready for a fresh cut?</h2><p>Walk-ins welcome, but booking guarantees your spot.</p><a class="btn" href="tel:+359880000000">Call to book</a></section>
-<section><div class="info">
-<div><h3>Location</h3><p>45 Station Road<br>City Centre</p></div>
-<div><h3>Hours</h3><p>Mon–Fri 10:00–20:00<br>Sat 9:00–18:00<br>Sun Closed</p></div>
-<div><h3>Contact</h3><p>+359 88 000 0000<br>book@sharpline.example</p></div>
-</div></section>
-<footer>© 2026 Sharp Line Barbers · Demo website</footer>
-<script>window.BOT_CONFIG={name:"Sharp Line Assistant",color:"#b8862f",
-greeting:"Hey! 💈 I can help with prices, opening hours, booking, or finding us. What do you need?",
-quick:["Prices","Book a cut","Opening hours","Walk-ins?","Where are you?"],
-rules:[
-{k:["price","cost","how much","€"],a:"Classic cut €15, skin fade €18, beard trim €10, hot towel shave €14, cut + beard combo €22, kids cut €10."},
-{k:["book","appoint","slot","reserv"],a:"Sure! Tell us your name, the service, and your preferred day and time, or call +359 88 000 0000 and we'll lock it in."},
-{k:["hour","open","close","sunday","saturday"],a:"Mon–Fri 10:00–20:00, Sat 9:00–18:00, closed Sundays."},
-{k:["walk"],a:"Walk-ins are welcome when a chair is free. Booking guarantees your spot, especially on Saturdays."},
-{k:["where","address","locat","find","parking"],a:"We're at 45 Station Road in the city centre, with street parking nearby."},
-{k:["fade","beard","shave","kid","child"],a:"We do it all: fades, classic cuts, beard sculpting, hot towel shaves and kids cuts. Want me to help you book one?"},
-{k:["card","cash","pay"],a:"We take cash and all major cards."},
-{k:["hi","hello","hey"],a:"Hey! What can I help you with?"}],
-fallback:"Good question! Give us a call at +359 88 000 0000 and one of the barbers will sort you out."};</script>
-<script>
-(function(){
-  const cfg = window.BOT_CONFIG;
-  const css = `
-  #cb-btn{position:fixed;right:22px;bottom:22px;width:60px;height:60px;border-radius:50%;border:none;background:${cfg.color};color:#fff;font-size:26px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:999}
-  #cb-win{position:fixed;right:22px;bottom:94px;width:340px;max-width:calc(100vw - 44px);height:460px;background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.25);display:none;flex-direction:column;overflow:hidden;z-index:999;font-family:inherit}
-  #cb-win.open{display:flex}
-  #cb-head{background:${cfg.color};color:#fff;padding:14px 16px;font-weight:600}
-  #cb-head small{display:block;font-weight:400;opacity:.85}
-  #cb-msgs{flex:1;overflow-y:auto;padding:14px;background:#f7f7f8}
-  .cb-m{max-width:80%;padding:9px 12px;border-radius:14px;margin:6px 0;font-size:14px;line-height:1.4;white-space:pre-line}
-  .cb-bot{background:#fff;color:#222;border:1px solid #e5e5e5}
-  .cb-me{background:${cfg.color};color:#fff;margin-left:auto}
-  #cb-quick{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;background:#f7f7f8}
-  #cb-quick button{border:1px solid ${cfg.color};color:${cfg.color};background:#fff;border-radius:999px;padding:5px 10px;font-size:12px;cursor:pointer}
-  #cb-form{display:flex;border-top:1px solid #eee}
-  #cb-form input{flex:1;border:none;padding:12px;font-size:14px;outline:none}
-  #cb-form button{border:none;background:none;color:${cfg.color};font-weight:600;padding:0 14px;cursor:pointer}`;
-  const s=document.createElement('style');s.textContent=css;document.head.appendChild(s);
-  const btn=document.createElement('button');btn.id='cb-btn';btn.innerHTML='💬';btn.setAttribute('aria-label','Chat');
-  const win=document.createElement('div');win.id='cb-win';
-  win.innerHTML=`<div id="cb-head">${cfg.name}<small>Usually replies instantly</small></div><div id="cb-msgs"></div><div id="cb-quick"></div><form id="cb-form"><input placeholder="Ask a question..." /><button>Send</button></form>`;
-  document.body.append(btn,win);
-  const msgs=win.querySelector('#cb-msgs'),quick=win.querySelector('#cb-quick'),form=win.querySelector('#cb-form'),input=form.querySelector('input');
-  function add(t,who){const d=document.createElement('div');d.className='cb-m '+(who==='me'?'cb-me':'cb-bot');d.textContent=t;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;}
-  function answer(q){const l=q.toLowerCase();for(const r of cfg.rules){if(r.k.some(k=>l.includes(k)))return r.a;}return cfg.fallback;}
-  function ask(q){add(q,'me');setTimeout(()=>add(answer(q)),450);}
-  cfg.quick.forEach(q=>{const b=document.createElement('button');b.type='button';b.textContent=q;b.onclick=()=>ask(q);quick.appendChild(b);});
-  let greeted=false;
-  btn.onclick=()=>{win.classList.toggle('open');if(!greeted){greeted=true;add(cfg.greeting);}};
-  form.onsubmit=e=>{e.preventDefault();const v=input.value.trim();if(!v)return;input.value='';ask(v);};
-})();
-</script></body></html>
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{font-family:Inter,system-ui,sans-serif;color:#eee;background:#111 radial-gradient(1200px 600px at 10% -10%,#2a2216 0,transparent 60%),radial-gradient(900px 500px at 110% 110%,#1d1a14 0,transparent 60%);background-color:#0f0f10}
+.wrap{max-width:1100px;margin:0 auto;min-height:100%;display:grid;grid-template-columns:1fr 420px;gap:48px;align-items:center;padding:40px 28px}
+.logo{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.mark{width:46px;height:46px;border:2px solid #c9a24a;border-radius:50%;display:grid;place-items:center;color:#c9a24a;font-size:22px}
+.logo span{font-family:'Playfair Display',serif;font-size:22px;letter-spacing:.5px}
+h1{font-family:'Playfair Display',serif;font-size:52px;line-height:1.05;margin:0 0 18px}
+h1 em{color:#c9a24a;font-style:normal}
+.lead{color:#b9b9b9;font-size:17px;line-height:1.6;max-width:460px;margin:0 0 30px}
+.feats{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:470px}
+.f{background:#1a1a1c;border:1px solid #2a2a2d;border-radius:12px;padding:14px}
+.f b{display:block;color:#c9a24a;font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.f small{color:#a8a8a8;font-size:13.5px;line-height:1.4}
+.foot{margin-top:26px;color:#777;font-size:12.5px}
+#chat{height:620px;max-height:calc(100vh - 80px);border-radius:18px;box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 1px #2c2c2f}
+#chat .db-box{background:#18181a}
+#chat .db-head{background:linear-gradient(135deg,#1c1c1e,#262320);border-bottom:1px solid #332c20;padding:16px 18px}
+#chat .db-head .db-title{font-family:'Playfair Display',serif;font-size:19px;color:#e9d3a4}
+#chat .db-head small{color:#8fbf8f}
+#chat .db-lang{border-color:#4a4030}#chat .db-lang button{color:#cdb98d}#chat .db-lang button.on{background:#c9a24a;color:#111}
+#chat .db-msgs{background:#141416}
+#chat .db-bot{background:#222226;border-color:#2e2e33;color:#e6e6e6}
+#chat .db-user{background:#c9a24a;color:#141414}
+#chat .db-chips{background:#18181a;border-top-color:#26262a}
+#chat .db-chip{background:transparent;border-color:#5a4a2c;color:#e2c88f}
+#chat .db-chip:hover{background:#2a2419}
+#chat .db-in{border-top-color:#26262a}#chat .db-in input{background:#1d1d20;color:#eee}
+#chat .db-in button{background:#c9a24a;color:#111;font-weight:600}
+@media(max-width:900px){.wrap{grid-template-columns:1fr;gap:28px;padding:22px 16px}h1{font-size:36px}.feats{display:none}.lead{font-size:15px;margin-bottom:0}#chat{height:72vh}}
+</style></head>
+<body><div class="wrap">
+<section>
+  <div class="logo"><div class="mark">✂</div><span>Sharp Line Barbers</span></div>
+  <h1>Book your cut in <em>30 seconds</em>, any time.</h1>
+  <p class="lead">Our booking assistant answers questions about prices, hours and services, and books your appointment, day or night, in English or Bulgarian.</p>
+  <div class="feats">
+    <div class="f"><b>24/7 booking</b><small>Only shows times the shop is actually open.</small></div>
+    <div class="f"><b>EN / BG</b><small>Switches language with one tap.</small></div>
+    <div class="f"><b>Instant answers</b><small>Prices, walk-ins, payment, location.</small></div>
+    <div class="f"><b>Fits any brand</b><small>Colours, services and wording made to measure.</small></div>
+  </div>
+  <p class="foot">Demo · the shop, prices and address are example data.</p>
+</section>
+<div id="chat"></div>
+</div>
+<script src="config.js"></script><script src="bot.js"></script>
+</body></html>
