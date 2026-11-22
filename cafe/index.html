@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bean & Bloom Café</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,'Times New Roman',serif;color:#3b2a20;background:#fbf6f0}
+a{color:inherit}nav{display:flex;justify-content:space-between;align-items:center;padding:18px 6vw;position:sticky;top:0;background:rgba(251,246,240,.95);z-index:10;border-bottom:1px solid #eadfd3}
+nav b{font-size:22px}nav div a{margin-left:22px;text-decoration:none;font-family:system-ui,sans-serif;font-size:15px}
+.hero{min-height:78vh;display:flex;align-items:center;padding:0 6vw;background:linear-gradient(120deg,rgba(59,42,32,.82),rgba(59,42,32,.35)),radial-gradient(circle at 75% 40%,#c8956c,#6b4630 60%,#3b2a20);color:#fff}
+.hero h1{font-size:clamp(38px,6vw,68px);line-height:1.05;max-width:640px}.hero p{font-family:system-ui,sans-serif;font-size:19px;margin:18px 0 28px;max-width:520px;opacity:.92}
+.btn{display:inline-block;background:#c8956c;color:#fff;padding:14px 26px;border-radius:999px;text-decoration:none;font-family:system-ui,sans-serif;font-weight:600;margin-right:10px}
+.btn.alt{background:transparent;border:2px solid #fff}
+section{padding:80px 6vw}h2{font-size:38px;margin-bottom:30px;text-align:center}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:22px;max-width:1050px;margin:auto}
+.card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 6px 20px rgba(59,42,32,.08)}.card .e{font-size:38px}.card h3{margin:10px 0 6px;display:flex;justify-content:space-between}.card p{font-family:system-ui,sans-serif;font-size:14px;color:#7a6556}
+.about{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;max-width:1050px;margin:auto}.about .img{height:340px;border-radius:20px;background:radial-gradient(circle at 30% 30%,#e9c9a8,#a8714d 70%);display:flex;align-items:center;justify-content:center;font-size:110px}
+.about p{font-family:system-ui,sans-serif;line-height:1.7;margin-bottom:14px}
+.reviews{background:#f1e6da}.rv{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;max-width:1050px;margin:auto}.rv .card p{font-size:15px;color:#3b2a20;font-style:italic}.rv .card b{display:block;margin-top:12px;font-family:system-ui,sans-serif;font-size:13px}
+.visit{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;max-width:1050px;margin:auto;font-family:system-ui,sans-serif}.visit h3{font-family:Georgia,serif;margin-bottom:8px}
+footer{background:#3b2a20;color:#e9d9c9;text-align:center;padding:30px;font-family:system-ui,sans-serif;font-size:13px}
+@media(max-width:720px){.about{grid-template-columns:1fr}nav div{display:none}}
+</style></head><body>
+<nav><b>☕ Bean & Bloom</b><div><a href="#menu">Menu</a><a href="#about">About</a><a href="#visit">Visit</a></div></nav>
+<header class="hero"><div><h1>Slow coffee, fresh pastries, good mornings.</h1><p>Specialty coffee roasted in small batches and pastries baked every morning, right in the heart of town.</p><a class="btn" href="#menu">See the menu</a><a class="btn alt" href="#visit">Find us</a></div></header>
+<section id="menu"><h2>Our favourites</h2><div class="menu">
+<div class="card"><div class="e">☕</div><h3>Flat White <span>€3.20</span></h3><p>Double ristretto with silky steamed milk.</p></div>
+<div class="card"><div class="e">🥐</div><h3>Butter Croissant <span>€2.50</span></h3><p>Baked fresh at 6am, flaky and golden.</p></div>
+<div class="card"><div class="e">🍵</div><h3>Matcha Latte <span>€3.80</span></h3><p>Ceremonial-grade matcha with oat milk.</p></div>
+<div class="card"><div class="e">🥑</div><h3>Avocado Toast <span>€6.90</span></h3><p>Sourdough, smashed avocado, chili and lime.</p></div>
+<div class="card"><div class="e">🍰</div><h3>Cheesecake <span>€4.50</span></h3><p>House-made, with seasonal berry compote.</p></div>
+<div class="card"><div class="e">🧊</div><h3>Cold Brew <span>€3.50</span></h3><p>Steeped for 18 hours, smooth and bold.</p></div>
+</div></section>
+<section id="about"><div class="about"><div class="img">🌿</div><div><h2 style="text-align:left">A little place with a big heart</h2><p>Bean & Bloom started with one espresso machine and a love for slow mornings. Today we roast our own beans and bake everything in-house.</p><p>Come for the coffee, stay for the cozy corner seats, free Wi-Fi and the friendliest baristas in town.</p></div></div></section>
+<section class="reviews"><h2>What guests say</h2><div class="rv">
+<div class="card"><p>"Best flat white I've had in the city. The croissants sell out fast for a reason."</p><b>★★★★★ Maria K.</b></div>
+<div class="card"><p>"Perfect spot to work for a few hours. Quiet, cozy, and great Wi-Fi."</p><b>★★★★★ Daniel P.</b></div>
+<div class="card"><p>"Lovely staff and the cheesecake is unreal. My new weekend ritual."</p><b>★★★★★ Elena S.</b></div>
+</div></section>
+<section id="visit"><h2>Come visit</h2><div class="visit">
+<div class="card"><h3>📍 Address</h3><p>12 Main Street<br>City Centre</p></div>
+<div class="card"><h3>🕗 Hours</h3><p>Mon–Fri 7:30–19:00<br>Sat–Sun 8:30–18:00</p></div>
+<div class="card"><h3>📞 Contact</h3><p>+359 88 000 0000<br>hello@beanandbloom.example</p></div>
+</div></section>
+<footer>© 2026 Bean & Bloom Café · Demo website</footer>
+<script>window.BOT_CONFIG={name:"Bean & Bloom Assistant",color:"#a8714d",
+greeting:"Hi there! ☕ I can help with our menu, opening hours, location, or reserving a table. What would you like to know?",
+quick:["Opening hours","Menu & prices","Where are you?","Book a table","Vegan options"],
+rules:[
+{k:["hour","open","close","time"],a:"We're open Mon–Fri 7:30–19:00 and Sat–Sun 8:30–18:00."},
+{k:["menu","price","cost","drink","coffee","eat","food"],a:"Favourites: Flat White €3.20, Matcha Latte €3.80, Cold Brew €3.50, Croissant €2.50, Avocado Toast €6.90, Cheesecake €4.50."},
+{k:["where","address","locat","find","parking"],a:"We're at 12 Main Street in the city centre, a short walk from the main square."},
+{k:["book","reserv","table","group"],a:"Happy to hold a table! Send your name, the number of people and the time, and we'll confirm by phone at +359 88 000 0000."},
+{k:["vegan","oat","dairy","gluten","allerg"],a:"Yes! We have oat and almond milk, vegan banana bread, and gluten-free brownies. Ask a barista about allergens."},
+{k:["wifi","wi-fi","laptop","work"],a:"Free Wi-Fi and plenty of sockets. Laptops welcome!"},
+{k:["deliver","takeaway","take away","order"],a:"Takeaway is available for everything on the menu. Call ahead and we'll have it ready."},
+{k:["hi","hello","hey"],a:"Hey! How can I help you today?"}],
+fallback:"Good question! For that, give us a call at +359 88 000 0000 or ask any of our baristas."};</script>
+<script>
+(function(){
+  const cfg = window.BOT_CONFIG;
+  const css = `
+  #cb-btn{position:fixed;right:22px;bottom:22px;width:60px;height:60px;border-radius:50%;border:none;background:${cfg.color};color:#fff;font-size:26px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:999}
+  #cb-win{position:fixed;right:22px;bottom:94px;width:340px;max-width:calc(100vw - 44px);height:460px;background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.25);display:none;flex-direction:column;overflow:hidden;z-index:999;font-family:inherit}
+  #cb-win.open{display:flex}
+  #cb-head{background:${cfg.color};color:#fff;padding:14px 16px;font-weight:600}
+  #cb-head small{display:block;font-weight:400;opacity:.85}
+  #cb-msgs{flex:1;overflow-y:auto;padding:14px;background:#f7f7f8}
+  .cb-m{max-width:80%;padding:9px 12px;border-radius:14px;margin:6px 0;font-size:14px;line-height:1.4;white-space:pre-line}
+  .cb-bot{background:#fff;color:#222;border:1px solid #e5e5e5}
+  .cb-me{background:${cfg.color};color:#fff;margin-left:auto}
+  #cb-quick{display:flex;flex-wrap:wrap;gap:6px;padding:8px 10px;background:#f7f7f8}
+  #cb-quick button{border:1px solid ${cfg.color};color:${cfg.color};background:#fff;border-radius:999px;padding:5px 10px;font-size:12px;cursor:pointer}
+  #cb-form{display:flex;border-top:1px solid #eee}
+  #cb-form input{flex:1;border:none;padding:12px;font-size:14px;outline:none}
+  #cb-form button{border:none;background:none;color:${cfg.color};font-weight:600;padding:0 14px;cursor:pointer}`;
+  const s=document.createElement('style');s.textContent=css;document.head.appendChild(s);
+  const btn=document.createElement('button');btn.id='cb-btn';btn.innerHTML='💬';btn.setAttribute('aria-label','Chat');
+  const win=document.createElement('div');win.id='cb-win';
+  win.innerHTML=`<div id="cb-head">${cfg.name}<small>Usually replies instantly</small></div><div id="cb-msgs"></div><div id="cb-quick"></div><form id="cb-form"><input placeholder="Ask a question..." /><button>Send</button></form>`;
+  document.body.append(btn,win);
+  const msgs=win.querySelector('#cb-msgs'),quick=win.querySelector('#cb-quick'),form=win.querySelector('#cb-form'),input=form.querySelector('input');
+  function add(t,who){const d=document.createElement('div');d.className='cb-m '+(who==='me'?'cb-me':'cb-bot');d.textContent=t;msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;}
+  function answer(q){const l=q.toLowerCase();for(const r of cfg.rules){if(r.k.some(k=>l.includes(k)))return r.a;}return cfg.fallback;}
+  function ask(q){add(q,'me');setTimeout(()=>add(answer(q)),450);}
+  cfg.quick.forEach(q=>{const b=document.createElement('button');b.type='button';b.textContent=q;b.onclick=()=>ask(q);quick.appendChild(b);});
+  let greeted=false;
+  btn.onclick=()=>{win.classList.toggle('open');if(!greeted){greeted=true;add(cfg.greeting);}};
+  form.onsubmit=e=>{e.preventDefault();const v=input.value.trim();if(!v)return;input.value='';ask(v);};
+})();
+</script></body></html>
