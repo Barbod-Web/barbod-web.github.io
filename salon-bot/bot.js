@@ -22,6 +22,8 @@
       offTopic: "Sorry, I can only help with questions about {biz}: prices, services, opening hours, location and bookings.",
       human: "I'm a virtual assistant (a demo), not a person. For anything I can't answer, you can call {phone}.",
       privacy: "Please don't share card numbers, passwords or other private details here. I only need a name and a phone number, and payment happens in person.",
+      unknown: "I'm not sure about that one, sorry. I can help with prices, services, opening hours, location and bookings, or you can call {phone} and the team will answer.",
+      back: "Now, back to your booking.",
       callUs: "Having trouble? You can also call us on {phone} and we'll sort it out.",
       summary: "Please check your booking:",
       confirm: "Confirm", edit: "Edit", cancel: "Cancel", which: "What would you like to change?",
@@ -41,6 +43,8 @@
       offTopic: "Извинете, мога да помогна само с въпроси за {biz}: цени, услуги, работно време, адрес и резервации.",
       human: "Аз съм виртуален асистент (демо), а не човек. За всичко, на което не мога да отговоря, можете да се обадите на {phone}.",
       privacy: "Моля, не споделяйте номера на карти, пароли или други лични данни тук. Нужни са ми само име и телефон, а плащането е на място.",
+      unknown: "Не съм сигурен за това, извинете. Мога да помогна с цени, услуги, работно време, адрес и резервации, а за друго можете да се обадите на {phone}.",
+      back: "Да продължим с резервацията.",
       callUs: "Нещо не се получава? Можете да ни се обадите и на {phone} и ще го уредим.",
       summary: "Моля, проверете резервацията си:",
       confirm: "Потвърди", edit: "Промени", cancel: "Отказ", which: "Какво искате да промените?",
@@ -56,15 +60,34 @@
   const norm = t => (t || "").toLowerCase().normalize("NFKC").trim();
   const esc = k => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const has = (t, k) => new RegExp("(^|[^\\p{L}\\p{N}])" + esc(k), "u").test(t);
+  function lev(a, b) {
+    const m = a.length, n = b.length; if (Math.abs(m - n) > 2) return 9;
+    let prev = Array.from({ length: n + 1 }, (_, j) => j);
+    for (let i = 1; i <= m; i++) { const cur = [i]; for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; }
+    return prev[n];
+  }
+  // how well text t matches a key: exact word-start match, or a near miss (typo) for longer single-word keys
+  function keyScore(t, k) {
+    k = norm(k); if (has(t, k)) return k.length;
+    if (k.length < 5) return 0;
+    const n = k.split(" ").length, tol = (k.length >= 8 && n === 1) ? 2 : 1;
+    const ws = t.split(/[^\p{L}]+/u).filter(Boolean);
+    for (let i = 0; i + n <= ws.length; i++) {
+      const w = ws.slice(i, i + n).join(" ");
+      if (lev(w, k) <= tol) return k.length * 0.8;
+      if (n === 1 && k.length >= 6 && w.length > k.length && lev(w.slice(0, k.length), k) <= 1) return k.length * 0.7;
+    }
+    return 0;
+  }
   const hasCyr = t => /[\u0400-\u04FF]/.test(t);
   const hasLat = t => /[a-z]/i.test(t);
 
   // Profanity / abuse. Word-start stems, plus a compacted check for spaced-out or leetspeak versions of the worst words.
   const BAD_STEMS = ["fuck","f*ck","fck","shit","bitch","cunt","pussy","asshole","arsehole","bastard","whore","slut","nigg","retard","wank","twat","motherf","dickhead","porn","penis","vagina",
-    "путк","пичк","ебан","ебах","ебем","ебал","шиба","курв","хуй","хуя","педал","мамка ти","майка ти","тъпанар","кретен","дебил","пенис","копел"];
+    "путк","пичк","ебан","ебах","ебем","ебал","шиба","курв","хуй","хуя","педал","мамка ти","майка ти","майна ти","майната ти","тъпанар","кретен","дебил","пенис","копел"];
   const BAD_WORDS = ["dick","dicks","cock","cocks","sex","sexy","tits","boob","boobs","fag","fags","idiot","moron","jerk","suck my","kill you","stupid bot","dumb bot","kys",
-    "еба","еби","гъз","задник","лайна","лайно","идиот","простак","секс","цици","тъп бот"];
-  const BAD_COMPACT = ["fuck","shit","cunt","bitch","nigg","asshole","whore","slut","путка","пичка","ебах","ебем","шибан","курва","хуй"];
+    "еба","еби","пишка","пишки","пишко","кур","кура","курът","гъз","задник","лайна","лайно","идиот","простак","секс","цици","тъп бот"];
+  const BAD_COMPACT = ["fuck","shit","cunt","bitch","asshole","whore","slut","путка","пичка","пишка","майнати","ебах","ебем","шибан","курва","хуй"];
   const LEET = { "0":"o","1":"i","3":"e","4":"a","5":"s","7":"t","@":"a","$":"s","!":"i" };
   const word = (t, w) => new RegExp("(^|[^\\p{L}])" + esc(w) + "($|[^\\p{L}])", "u").test(t);
   function isAbusive(raw) {
@@ -77,7 +100,7 @@
     let t = raw.replace(/\d[\d \-]{12,}\d/g, m => m.replace(/\D/g, "").length >= 14 ? m.replace(/\d/g, "•") : m);
     return isAbusive(t) ? "•••" : t;
   }
-  const PRIVATE = ["card number","credit card","debit card","cvv","cvc","iban","pin code","password","passport","егн","номер на карта","кредитна карта","дебитна карта","парола","паспорт","лична карта"];
+  const PRIVATE = ["card number","card no","card details","cvv","cvc","iban","pin code","password","passport number","егн","номер на карта","данни на карта","парола","номер на паспорт","лична карта"];
   const isPrivate = raw => { const t = norm(raw); return PRIVATE.some(k => t.includes(k)) || (t.match(/\d[\d \-]*\d/g) || []).some(m => m.replace(/\D/g, "").length >= 14); };
   const HUMAN = ["are you human","are you a human","are you real","real person","are you a person","are you a bot","are you a robot","talk to a human","човек ли","истински човек","бот ли","робот ли","жив човек","с човек"];
 
@@ -244,10 +267,52 @@
     const n = booking.step + 1;
     if (n < steps().length) ask(n); else showSummary();
   }
+  const QWORDS = ["how","what","when","where","which","who","why","do you","does","can i","can you","is there","are there","is it","колко","как","какв","кога","къде","кой","коя","кое","защо","има ли","може ли","мога ли","правите ли","приемате ли","работите ли"];
+  const isQuestion = raw => /\?/.test(raw) || QWORDS.some(w => norm(raw).indexOf(w) === 0 && word(norm(raw), w));
+  const OFF = ["bitcoin","биткойн","crypto","крипто","weather","времето","прогноза","politic","полити","news","новини","joke","виц","poem","стих","homework","домашн","recipe","рецепт","stock","акции","football","футбол","code","програм","chatgpt","translate","преведи","casino","казино","loan","кредит","dating","запознанств","president","президент","election","избори"];
+  // Answer a free-form question only from this business's config. Returns true if it said something.
+  function answerFree(raw, unknownToo) {
+    const q = norm(raw), B = L();
+    if (HUMAN.some(k => q.includes(k))) { botSay(fill(s().human, { phone: PHONE_[lang] })); return true; }
+    if (OFF.some(w => has(q, w))) { botSay(fill(s().offTopic, { biz: B.name })); return true; }
+    let best = -1, bestScore = 0;
+    const en = C.en.faq || [], bg = C.bg.faq || [];
+    for (let i = 0; i < Math.max(en.length, bg.length); i++) {
+      const keys = [...((en[i] || {}).keys || []), ...((bg[i] || {}).keys || [])];
+      const sc = keys.reduce((acc, k) => acc + keyScore(q, k), 0);
+      if (sc > bestScore) { bestScore = sc; best = i; }
+    }
+    const hk = [...(C.en.hoursKeys || []), ...(C.bg.hoursKeys || []), "hours", "opening", "close", "closing", "работите", "работно време", "затваряте"];
+    const hs = hk.reduce((acc, k) => acc + keyScore(q, k), 0);
+    if (hs > 0 && hs >= bestScore) { botSay((isOpenNow() ? B.openNow : B.closedNow) + " " + B.hoursText); return true; }
+    if (best >= 0 && bestScore >= 3) { botSay((B.faq[best] || en[best] || bg[best]).answer); return true; }
+    if (unknownToo) { botSay(fill(s().unknown, { phone: PHONE_[lang] })); return true; }
+    return false;
+  }
+  // mid-booking: answer the question, then repeat the current step
+  function answerThenResume(raw) {
+    if (!answerFree(raw, isQuestion(raw))) return false;
+    botSay(s().back);
+    if (booking.step === "summary") { showSummary(); return true; }
+    if (booking.step === "pick") { botSay(s().which); setChips([...steps().map(st => s().labels[st.key]), s().cancel]); return true; }
+    ask(booking.step); return true;
+  }
+
+  // switch language only for a real sentence: 2+ words in the other script, at least one a known word
+  const COMMON = { en: ["the","you","your","do","does","is","are","can","have","how","what","when","where","much","price","open","book","want","need","please","hi","hello","my","for","a","an","it","there","time","today","tomorrow"],
+                   bg: ["как","какво","кога","къде","колко","има","ли","искам","може","мога","да","за","на","в","се","сте","вие","час","цена","цени","моля","здравейте","здрасти","утре","днес","работите","отворени"] };
+  function looksLike(raw, lg) {
+    const ws = norm(raw.replace(/<[^>]*>/g, " ")).split(/[^\p{L}]+/u).filter(Boolean);
+    const inScript = ws.filter(w => lg === "bg" ? /^[\u0400-\u04FF]+$/.test(w) : /^[a-z]+$/.test(w));
+    if (inScript.length < 2 || inScript.length < ws.length / 2) return false;
+    const known = [...COMMON[lg], ...((C[lg].faq || []).flatMap(f => f.keys)), ...(C[lg].hoursKeys || []), ...(C[lg].booking.triggers || [])];
+    return inScript.some(w => w.length >= 3 && known.some(k => !k.includes(" ") && k.length >= 3 && (w === k || (k.length >= 4 && w.startsWith(k)))));
+  }
+
   function bookingInput(raw) {
     const T = L(), t = norm(raw);
     const isCancel = [s().cancel, ...T.cancelWords, ...(C.en.cancelWords || []), ...(C.bg.cancelWords || [])].some(w => has(t, norm(w)));
-    if (isCancel) { booking = null; fails = 0; botSay(T.cancelled); return setChips(); }
+    if (isCancel && !isQuestion(raw)) { booking = null; fails = 0; botSay(T.cancelled); return setChips(); }
 
     if (booking.step === "summary") {
       if ([S.en.confirm, S.bg.confirm, "yes", "ok", "да", "добре"].some(w => t === norm(w))) {
@@ -259,35 +324,37 @@
         booking.step = "pick"; botSay(s().which);
         return setChips([...steps().map(st => s().labels[st.key]), s().cancel]);
       }
+      if (answerThenResume(raw)) return;
       botSay(s().confirmOrEdit); return setChips([s().confirm, s().edit, s().cancel], true);
     }
     if (booking.step === "pick") {
       const i = steps().findIndex(st => [S.en.labels[st.key], S.bg.labels[st.key]].some(l => norm(l) === t));
+      if (i < 0 && answerThenResume(raw)) return;
       if (i < 0) { botSay(s().which); return setChips([...steps().map(st => s().labels[st.key]), s().cancel]); }
       booking.editing = true; booking.needTime = steps()[i].key === "day"; return ask(i);
     }
 
     const st = steps()[booking.step];
     if (st.key === "day") {
-      const d = matchDay(raw); if (!d) return retry();
+      const d = matchDay(raw); if (!d) return answerThenResume(raw) || retry();
       booking.data.day = d; booking.day = d; fails = 0;
       if (!timesFor(d.toDateString() === new Date().toDateString() ? new Date() : d).length) return retry(s().noSlots);
       return nextOrSummary();
     }
     if (st.key === "time") {
-      const v = matchTime(raw, stepChoices(st)); if (!v) return retry();
+      const v = matchTime(raw, stepChoices(st)); if (!v) return answerThenResume(raw) || retry();
       booking.data.time = v; fails = 0; return nextOrSummary();
     }
     if (st.key === "name") {
       const pet = (T.booking.steps.find(z => z.key === "pet")) != null;
-      const v = validName(raw, pet); if (!v) return retry(pet ? s().badNamePet : s().badName);
+      const v = isQuestion(raw) ? null : validName(raw, pet); if (!v) return answerThenResume(raw) || retry(pet ? s().badNamePet : s().badName);
       booking.data.name = v; fails = 0; return nextOrSummary();
     }
     if (st.key === "phone") {
-      const v = validPhone(raw); if (!v) return retry(s().badPhone);
+      const v = validPhone(raw); if (!v) return answerThenResume(raw) || retry(s().badPhone);
       booking.data.phone = v; fails = 0; return nextOrSummary();
     }
-    const i = matchOption(raw, st); if (i < 0) return retry();
+    const i = matchOption(raw, st); if (i < 0) return answerThenResume(raw) || retry();
     booking.data[st.key] = i; fails = 0; return nextOrSummary();
   }
 
@@ -299,8 +366,8 @@
     // Rule 10: answer in the customer's language (not while typing a name or phone, which can be in any script)
     const freeStep = booking && typeof booking.step === "number" && ["name", "phone"].includes(steps()[booking.step].key);
     const NEUTRAL = ["ok","okay","oki","ок","да","не","yes","no","hi"];
-    if (!freeStep && /\p{L}{3,}/u.test(raw) && !NEUTRAL.includes(norm(raw).replace(/[^\p{L}]/gu, ""))) {
-      const want = hasCyr(raw) ? "bg" : (hasLat(raw) ? "en" : lang);
+    if (!freeStep && !NEUTRAL.includes(norm(raw).replace(/[^\p{L}]/gu, "")) && looksLike(raw, lang === "en" ? "bg" : "en")) {
+      const want = lang === "en" ? "bg" : "en";
       if (want !== lang) { lang = want; render(false); }
     }
 
@@ -308,20 +375,12 @@
     if (isPrivate(raw) && !(freeStep && steps()[booking.step].key === "phone")) { botSay(s().privacy); return; }
     if (booking) return bookingInput(raw);
 
-    const t = norm(raw), T = L();
-    if (HUMAN.some(k => t.includes(k))) { botSay(fill(s().human, { phone: PHONE_[lang] })); return setChips(); }
-    const OFF = ["bitcoin","биткойн","crypto","крипто","weather","времето","прогноза","politic","полити","news","новини","joke","виц","poem","стих","homework","домашн","recipe","рецепт","stock","акции","football","футбол","code","програм","chatgpt","translate","преведи","casino","казино","loan","кредит","dating","запознанств"];
-    if (OFF.some(w => has(t, w))) { botSay(fill(s().offTopic, { biz: T.name })); return setChips(); }
-    const allTrig = [...C.en.booking.triggers, ...C.bg.booking.triggers];
-    if (allTrig.some(w => has(t, w)) || ["запиш", "записв", "booking"].some(w => has(t, w)) || word(t, "час")) { booking = { data: {} }; fails = 0; return ask(0); }
-    if ([...C.en.hoursKeys, ...C.bg.hoursKeys].some(k => has(t, k))) { botSay((isOpenNow() ? T.openNow : T.closedNow) + " " + T.hoursText); misses = 0; return setChips(); }
-    for (const lg of [lang, lang === "en" ? "bg" : "en"]) {
-      const faq = C[lg].faq || [];
-      const idx = faq.findIndex(f => f.keys.some(k => has(t, k)));
-      if (idx >= 0) { botSay((T.faq[idx] || faq[idx]).answer); misses = 0; return setChips(); }
-    }
-    botSay(fill(s().offTopic, { biz: T.name }));
-    if (++misses >= 3) { botSay(fill(s().callUs, { phone: PHONE_[lang] })); misses = 0; }
+    const t = norm(raw);
+    const wantsBooking = [...C.en.booking.triggers, ...C.bg.booking.triggers, "запиш", "записв", "booking"].some(w => has(t, w)) || word(t, "час");
+    if (wantsBooking && !isQuestion(raw)) { booking = { data: {} }; fails = 0; return ask(0); }
+    if (answerFree(raw, false)) { misses = 0; return setChips(); }
+    if (wantsBooking) { booking = { data: {} }; fails = 0; return ask(0); }
+    botSay(fill(s().unknown, { phone: PHONE_[lang] }));
     setChips();
   }
 
