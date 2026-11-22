@@ -20,17 +20,30 @@ h1 em{color:#b05a6e;font-style:normal}
 #chat .db-head{padding:16px 18px}
 #chat .db-head .db-title{font-family:'Playfair Display',serif;font-size:19px}
 #chat .db-msgs{background:#fbfafa}
-@media(max-width:900px){.wrap{grid-template-columns:1fr;gap:28px;padding:22px 16px}h1{font-size:34px}.feats{display:none}.lead{font-size:15px;margin-bottom:0}#chat{height:72vh}}
+@media(max-width:900px){html,body{height:auto}.wrap{display:flex;flex-direction:column;min-height:100svh;height:100svh;gap:14px;padding:14px 12px}
+.logo{margin-bottom:10px}.mark{width:36px;height:36px;font-size:17px}.logo span{font-size:18px}
+h1{font-size:24px;margin:0}.lead,.feats,.foot{display:none}
+#chat{flex:1;height:auto;min-height:340px;max-height:none}}
 </style></head>
 <body><div class="wrap">
 <section>
   <div class="logo"><div class="mark">✿</div><span>Bloom Beauty Studio</span></div>
-  <h1>Book your next treatment in <em>30 seconds</em>.</h1>
-  <p class="lead">Our assistant answers questions about prices, treatments and opening hours, and books your appointment any time, in English or Bulgarian.</p>
-  <div class="feats"><div class="f"><b>24/7 booking</b><small>Only offers times the studio is open.</small></div><div class="f"><b>EN / BG</b><small>Switches language with one tap.</small></div><div class="f"><b>Instant answers</b><small>Prices, treatments, payment, location.</small></div><div class="f"><b>Made to measure</b><small>Your services, colours and wording.</small></div></div>
-  <p class="foot">Demo · the business, prices and address are example data.</p>
+  <h1 id="i-h">Book your next treatment in <em>30 seconds</em>.</h1>
+  <p class="lead" id="i-lead">Our assistant answers questions about prices, treatments and opening hours, and books your appointment any time, in English or Bulgarian.</p>
+  <div class="feats" id="i-feats"><div class="f"><b>24/7 booking</b><small>Only offers times the studio is open.</small></div><div class="f"><b>EN / BG</b><small>Switches language with one tap.</small></div><div class="f"><b>Instant answers</b><small>Prices, treatments, payment, location.</small></div><div class="f"><b>Made to measure</b><small>Your services, colours and wording.</small></div></div>
+  <p class="foot" id="i-foot">Demo · the business, prices and address are example data.</p>
 </section>
 <div id="chat"></div>
 </div>
+<script>
+const PAGE_TX = {"en": {"h": "Book your next treatment in <em>30 seconds</em>.", "lead": "Our assistant answers questions about prices, treatments and opening hours, and books your appointment any time, in English or Bulgarian.", "f": [["24/7 booking", "Only offers times the studio is open."], ["EN / BG", "Switches language with one tap."], ["Instant answers", "Prices, treatments, payment, location."], ["Made to measure", "Your services, colours and wording."]], "foot": "Demo · the business, prices and address are example data."}, "bg": {"h": "Запазете следващата си процедура за <em>30 секунди</em>.", "lead": "Нашият асистент отговаря на въпроси за цени, процедури и работно време и записва час по всяко време, на български или английски.", "f": [["Записване 24/7", "Предлага само часове, в които студиото работи."], ["EN / BG", "Сменя езика с едно докосване."], ["Бързи отговори", "Цени, процедури, плащане, адрес."], ["По мярка", "Вашите услуги, цветове и текстове."]], "foot": "Демо · бизнесът, цените и адресът са примерни."}};
+window.onBotLang = function (l) {
+  const t = PAGE_TX[l] || PAGE_TX.en; document.documentElement.lang = l;
+  document.getElementById("i-h").innerHTML = t.h;
+  document.getElementById("i-lead").textContent = t.lead;
+  document.getElementById("i-foot").textContent = t.foot;
+  document.getElementById("i-feats").innerHTML = t.f.map(x => '<div class="f"><b>' + x[0] + '</b><small>' + x[1] + '</small></div>').join("");
+};
+</script>
 <script src="config.js"></script><script src="bot.js"></script>
 </body></html>
