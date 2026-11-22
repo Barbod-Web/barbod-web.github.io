@@ -2,7 +2,8 @@
 (function () {
   const C = window.BOT_CONFIG || {};
   const color = C.color || "#2f6f4f";
-  let lang = (C.defaultLang) || ((navigator.language || "").startsWith("bg") ? "bg" : "en");
+  const qLang = new URLSearchParams(location.search).get("lang");
+  let lang = (qLang === "bg" || qLang === "en") ? qLang : (C.defaultLang) || ((navigator.language || "").startsWith("bg") ? "bg" : "en");
   const L = () => C[lang] || C.en;
   const css = `
   .db-btn{position:fixed;right:20px;bottom:20px;width:58px;height:58px;border-radius:50%;background:${color};color:#fff;border:none;font-size:26px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);z-index:9999}
