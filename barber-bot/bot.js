@@ -30,6 +30,9 @@
       confirmOrEdit: "Please tap Confirm to book, Edit to change something, or Cancel.",
       dayNA: "Sorry, we can't take bookings for that day. Please choose one of these:",
       notOffered: "Sorry, that's not something we offer. I can help with our services, prices, opening hours and bookings, or you can call {phone}.",
+      hello: "Hi! I can help with prices, services, opening hours and bookings. What would you like to know?",
+      ack: "Okay! Anything else I can help with?",
+      slotGone: "Sorry, that time is no longer available. Please choose another one:",
       labels: { service: "Service", pet: "Pet", people: "People", day: "Day", time: "Time", name: "Name", phone: "Phone" },
       at: "at"
     },
@@ -53,6 +56,9 @@
       confirmOrEdit: "Моля, натиснете „Потвърди“, за да запазите, „Промени“, за да коригирате, или „Отказ“.",
       dayNA: "Съжаляваме, за този ден не можем да приемем резервация. Моля, изберете един от тези дни:",
       notOffered: "За съжаление не предлагаме тази услуга. Мога да помогна с услугите, цените, работното време и резервациите, а можете и да се обадите на {phone}.",
+      hello: "Здравейте! Мога да помогна с цени, услуги, работно време и резервации. Какво ви интересува?",
+      ack: "Добре! С какво друго мога да помогна?",
+      slotGone: "Съжаляваме, този час вече не е свободен. Моля, изберете друг:",
       labels: { service: "Услуга", pet: "Любимец", people: "Брой хора", day: "Ден", time: "Час", name: "Име", phone: "Телефон" },
       at: "в"
     }
@@ -94,7 +100,7 @@
 
   // Profanity / abuse. Word-start stems, plus a compacted check for spaced-out or leetspeak versions of the worst words.
   const BAD_STEMS = ["fuck","f*ck","fck","shit","bitch","cunt","pussy","asshole","arsehole","bastard","whore","slut","nigg","retard","wank","twat","motherf","dickhead","porn","penis","vagina",
-    "путк","пичк","ебан","ебах","ебем","ебал","курв","хуй","хуя","педал","мамка ти","майка ти","майна ти","майната ти","тъпанар","кретен","дебил","пенис","копел","педерас","fuk","phuck","fcuk","kopele","copele","шибан","шибал","шибай","шибам","шибаш","шибе","шибн","мамата ти","майката ти"];
+    "путк","пичк","ебан","ебах","ебем","ебал","курв","хуй","хуя","педал","мамка ти","майка ти","майна ти","майната ти","тъпанар","кретен","дебил","пенис","копел","педерас","fuk","phuck","fcuk","kopele","copele","шибан","шибал","шибай","шибам","шибаш","шибе","шибн","мамата ти","майката ти","мамицата ти","хуе","ебач","ебат","phuk","fvck"];
   const BAD_WORDS = ["dick","dicks","cock","cocks","sex","sexy","tits","boob","boobs","fag","fags","idiot","moron","jerk","suck my","kill you","stupid bot","dumb bot","kys",
     "еба","еби","пишка","пишки","пишко","кур","кура","курът","гъз","задник","лайна","лайно","идиот","простак","секс","цици","тъп бот","фак"];
   const BAD_COMPACT = ["fuck","shit","cunt","bitch","asshole","whore","slut","путка","пичка","пишка","майнати","ебах","ебем","шибан","курва","хуй"];
@@ -112,12 +118,28 @@
   // a word mixing Latin and Cyrillic look-alike letters ("пишкa", "fuсk") is folded into one script
   const HOMO_C = { a:"а", e:"е", o:"о", p:"р", c:"с", x:"х", y:"у", k:"к", m:"м", t:"т", b:"в", h:"н", i:"і" };
   const HOMO_L = Object.fromEntries(Object.entries(HOMO_C).map(([l, c]) => [c, l]).concat([["і","i"],["ѕ","s"],["ј","j"],["и","u"]]));
+  const HOMO_C2 = Object.assign({}, HOMO_C, { u:"и", n:"п", r:"г", "$":"с", "@":"а", "0":"о", "1":"и", "6":"ш" });   // only for Cyrillic-majority words
   function unHomoglyph(t) {
     return t.replace(/[\p{L}\d*@$!]+/gu, w => {
+      if (/[\u0400-\u04FF]/.test(w) && /[\d@$]/.test(w) && !/[a-z]/.test(w)) return w.replace(/[\d@$]/g, c => HOMO_C2[c] || c);   // "пи$ка", "п1шка"
       if (!(/[a-z]/.test(w) && /[\u0400-\u04FF]/.test(w))) return w;
       const cyr = (w.match(/[\u0400-\u04FF]/g) || []).length, lat = (w.match(/[a-z]/g) || []).length;
-      return cyr >= lat ? w.replace(/[a-z]/g, c => HOMO_C[c] || c).replace(/і/g, "и") : w.replace(/[\u0400-\u04FF]/g, c => HOMO_L[c] || c);
+      return cyr >= lat ? w.replace(/[a-z]/g, c => HOMO_C2[c] || c).replace(/і/g, "и") : w.replace(/[\u0400-\u04FF]/g, c => HOMO_L[c] || c);
     });
+  }
+  // look-alike letters from other alphabets (Greek, small caps, fancy f) and Latin accents ("fück")
+  const CONFUS = { "α":"a","β":"b","ε":"e","η":"n","ι":"i","κ":"k","μ":"m","ν":"v","ο":"o","ρ":"p","τ":"t","υ":"u","χ":"x","ς":"s","σ":"s","γ":"y",
+    "ƒ":"f","ꜰ":"f","ᴜ":"u","ᴄ":"c","ᴋ":"k","ɪ":"i","ᴛ":"t","ꜱ":"s","ʜ":"h","ᴀ":"a","ᴇ":"e","ᴏ":"o","ʀ":"r","ᴘ":"p","ʏ":"y","ʙ":"b","ɢ":"g","ᴍ":"m","ɴ":"n","ᴅ":"d","ʟ":"l","ᴡ":"w","ᴠ":"v","ᴢ":"z" };
+  const unConfuse = t => t.replace(/[\u0370-\u03ff\u0192\u1d00-\u1d2b\ua730-\ua731\u0280\u028f\u0299\u029c\u029f\u0262\u026a\u0274]/g, c => CONFUS[c] || c)
+    .normalize("NFD").replace(/([a-z])[\u0300-\u036f]+/g, "$1").normalize("NFC");
+  // "pi-shka", "p.i.s.h.k.a", "fu ck": letters split by punctuation inside one word, or short chunks split by spaces
+  function squash(t) {
+    const out = [];
+    for (const w of t.split(/\s+/).filter(Boolean)) out.push(w.replace(/[^\p{L}\d*@$!]+/gu, ""));
+    const res = [], run = [];
+    for (const w of out) { if (w.length && w.length <= 2) run.push(w); else { if (run.length > 1) res.push(run.join("")); run.length = 0; if (w) res.push(w); } }
+    if (run.length > 1) res.push(run.join(""));
+    return res.join(" ");
   }
   function abusiveText(t) {
     t = t.replace(/(^|[^\p{L}])(shitzu|shitsu|shiitake|scunthorpe)(?=$|[^\p{L}])/gu, "$1");   // dog breed typed as "shitzu", etc.
@@ -141,19 +163,29 @@
     });
   }
   function isAbusive(raw) {
-    const t = unHomoglyph(norm(raw));
-    if (abusiveText(t)) return true;
-    return /[a-z]/.test(t) && abusiveText(translit(t));
+    const t = unHomoglyph(unConfuse(norm(raw)));
+    for (const v of [t, squash(t)]) {
+      if (abusiveText(v)) return true;
+      if (/[a-z]/.test(v) && abusiveText(translit(v))) return true;
+    }
+    // two short pieces that only together make a swear word: "bi tch", "пи шка"
+    const ws = t.split(/[^\p{L}]+/u).filter(Boolean);
+    for (let i = 0; i + 1 < ws.length; i++) {
+      if (ws[i].length > 3 || ws[i + 1].length > 3) continue;
+      const j = ws[i] + ws[i + 1];
+      if (BAD_COMPACT.some(b => j.startsWith(b) || (/[a-z]/.test(j) && translit(j).startsWith(b)))) return true;
+    }
+    return false;
   }
   function maskForDisplay(raw) {
     let t = raw.replace(/\d[\d \-]{12,}\d/g, m => m.replace(/\D/g, "").length >= 14 ? m.replace(/\d/g, "•") : m);
     return isAbusive(t) ? "•••" : t;
   }
-  const PRIVATE = ["card number","card no","card details","cvv","cvc","iban","pin code","password","passport number","егн","номер на карта","данни на карта","парола","номер на паспорт","лична карта"];
+  const PRIVATE = ["egn","card number","card no","card details","cvv","cvc","iban","pin code","password","passport number","егн","номер на карта","данни на карта","парола","номер на паспорт","лична карта"];
   const isPrivate = raw => { const t = norm(raw); return PRIVATE.some(k => t.includes(k)) || (t.match(/\d[\d \-]*\d/g) || []).some(m => m.replace(/\D/g, "").length >= 14); };
   const HUMAN = ["are you human","are you a human","are you real","real person","are you a person","are you a bot","are you a robot","talk to a human","човек ли","истински човек","бот ли","робот ли","жив човек","с човек","човек си",
     "who replies","who is replying","who answers","who is answering","who am i talking","who am i chatting","who is this","who are you","is anyone there","anybody there",
-    "кой отговаря","кой ми отговаря","кой ми пише","кой пише","с кого говоря","с кого си пиша","кой си ти","кой сте вие"];
+    "you are a person","you're a person","you are human","you're human","are u human","r u human","r u a bot","u a bot","say you are","ти си човек","аз съм човек","кажи че си","кажи, че си","кой отговаря","кой ми отговаря","кой ми пише","кой пише","с кого говоря","с кого си пиша","кой си ти","кой сте вие"];
   const HUMAN_W = ["bot","robot","human","chatgpt","ai","бот","робот","изкуствен интелект"];
   const isHuman = q => HUMAN.some(k => q.includes(k)) || HUMAN_W.some(w => word(q, w));
   // things that are never in any config: say so instead of matching a loosely related FAQ
@@ -199,11 +231,12 @@
   }
   let q = 0; // queue bot messages so they keep order
   function botSay(t) { const delay = 300 + 250 * q++; setTimeout(() => { say(t, "bot"); q = Math.max(0, q - 1); }, delay); }
+  let chipLock = 0;
   function setChips(list, primaryFirst) {
     chips.innerHTML = "";
     (list || L().quick || []).forEach((label, i) => {
       const b = document.createElement("button"); b.type = "button"; b.className = "db-chip" + (primaryFirst && i === 0 ? " pri" : "");
-      b.textContent = label; b.onclick = () => handle(label); chips.appendChild(b);
+      b.textContent = label; b.onclick = () => { if (Date.now() < chipLock) return; chipLock = Date.now() + 700; handle(label); }; chips.appendChild(b);
     });
   }
 
@@ -253,6 +286,7 @@
   }
   function dayHit(w, name) { return w === name || (w.length >= 3 && name.startsWith(w)) || (w.length >= 5 && w[0] === name[0] && lev(w, name) <= (name.length >= 8 ? 2 : 1)); }
   function matchDay(raw) {
+    if (/day after tomorrow|вдругиден|в другиден/.test(norm(raw))) { const n = nowZ(); n.setHours(0,0,0,0); n.setDate(n.getDate() + 2); return booking.dates.find(d => new Date(d).setHours(0,0,0,0) === n.getTime()) || null; }
     const ws = dayWords(raw); if (!ws.length || ws.length > 3) return null;
     for (const w of ws) for (const d of booking.dates) {
       for (const lg of ["en", "bg"]) {
@@ -264,6 +298,7 @@
   }
   // a real weekday / today / tomorrow that is not on offer (closed or fully booked)
   function namesUnavailableDay(raw) {
+    if (/day after tomorrow|вдругиден|в другиден/.test(norm(raw))) return true;
     const ws = dayWords(raw), now = nowZ();
     for (let i = 0; i < 7; i++) {
       const d = new Date(now); d.setDate(now.getDate() + i);
@@ -311,13 +346,15 @@
     }
     return -1;
   }
-  const NOT_NAME = ["you","your","are","is","the","now","ignore","instructions","please","want","need","book","free","human","bot","what","how","why","give","me",
+  const NOT_NAME = ["slot","appointment","booking","today","tomorrow","you","your","are","is","the","now","ignore","instructions","please","want","need","book","free","human","bot","what","how","why","give","me",
                     "вече","си","ти","вие","искам","моля","забрави","игнорирай","инструкциите","инструкции","безплатно","човек","бот","как","какво","дай","ми"];
   function validName(raw, pet) {
     const t = raw.trim().replace(/\s+/g, " ").replace(/^(my name is|my name's|name is|name:|i am|i'm|im|it's|it is|this is|казвам се|името ми е|аз съм|име:)\s+/i, "");
     if (t.toLowerCase().split(/[ ,]+/).some(w => NOT_NAME.includes(w))) return null;
     if (t.length < 2 || t.length > (pet ? 60 : 40)) return null;
     if (!(pet ? /^[\p{L}][\p{L} '.,&-]*$/u : /^[\p{L}][\p{L} '.-]*$/u).test(t)) return null;
+    if (/[^\p{Script=Latin}\p{Script=Cyrillic} '.,&-]/u.test(t) || /[\u1d00-\u1d2b\ua730-\ua731\u0280-\u02af\u0192]/.test(t)) return null;   // Greek look-alikes, small caps
+    if (t.split(/[ .,-]+/).filter(w => w.length === 1).length >= 3) return null;      // "p i s h k a"
     if (/(\p{L})\1\1/iu.test(t)) return null;              // "aaaa", "ккк"
     if (t.split(" ").length > (pet ? 7 : 4)) return null;
     if (isAbusive(t)) return null;
@@ -325,11 +362,11 @@
     return t.split(" ").map(w => ["and","и","&"].includes(w) ? w : w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
   }
   function validPhone(raw) {
-    const t = raw.trim();
+    const t = raw.trim().replace(/^(my (phone |mobile )?number is|my phone is|phone|tel\.?|mobile|number|номерът ми е|телефонът ми е|телефон|тел\.?|номер)\s*:?\s*/i, "").replace(/[\s,.!]*(please|pls|thanks|thank you|моля|благодаря|мерси)[\s.!]*$/i, "").trim();
     if (!/^\+?[\d \-().]{6,22}$/.test(t)) return null;
     const d = t.replace(/[\s\-().]/g, "").replace(/^00/, "+");
     const ok = /^\+[1-9]\d{7,13}$/.test(d) || /^0[1-9]\d{7,8}$/.test(d) || /^[89]\d{8}$/.test(d);   // +country..., 0888 123 456, 02 987 6543
-    if (!ok) return null;
+    if (!ok || /^0(8[789]|9[89])/.test(d) && d.length !== 10) return null;
     const nat = d.replace(/^\+359|^\+\d{1,3}|^0/, "");
     if (/^(\d)\1+$/.test(nat) || "0123456789".includes(nat) || "9876543210".includes(nat)) return null;    // 0000000000, 123456789
     return t.replace(/\s+/g, " ");
@@ -364,6 +401,11 @@
     if (fails >= 3) { botSay(fill(s().callUs, { phone: PHONE_[lang] })); fails = 0; }
     setChips([...stepChoices(st), s().cancel]);
   }
+  function slotStillOpen() {
+    const d = booking.day, now = nowZ(); if (!d || !booking.data.time) return false;
+    if (new Date(d).setHours(0,0,0,0) < new Date(now).setHours(0,0,0,0)) return false;
+    return timesFor(d.toDateString() === now.toDateString() ? now : d).includes(booking.data.time);
+  }
   function showSummary() {
     booking.step = "summary";
     const lines = steps().map(st => "• " + s().labels[st.key] + ": " + valueText(st.key));
@@ -384,6 +426,7 @@
     const q = tr || q0;
     if (isHuman(q0) || (tr && isHuman(tr))) { botSay(fill(s().human, { phone: PHONE_[lang] })); return true; }
     if (OFF.some(w => has(q, w))) { botSay(fill(s().offTopic, { biz: B.name })); return true; }
+    if (["email","e-mail","имейл","имейла","мейл"].some(w => word(q, w))) { botSay(fill(s().unknown, { phone: PHONE_[lang] })); return true; }
     if ([...NOT_HERE, ...(C.notOffered || [])].some(w => keyScore(q, w) >= w.replace("$", "").length)) { botSay(fill(s().notOffered, { phone: PHONE_[lang] })); return true; }
     // several questions in one message: answer each part (max 3)
     const parts = q.split(/\?|;|\s(?:and|also|plus|и|а|също)\s/u).map(x => x.trim()).filter(x => x.length >= 3);
@@ -445,6 +488,14 @@
     if (isCancel && !isQuestion(raw)) { booking = null; fails = 0; botSay(T.cancelled); return setChips(); }
 
     if (booking.step === "summary") {
+      if ([S.en.confirm, S.bg.confirm, "yes", "ok", "да", "добре"].some(w => t === norm(w)) && !slotStillOpen()) {
+        fails = 0; booking.editing = true; booking.data.time = null;
+        const now = nowZ(), sameDay = booking.day && booking.day.toDateString() === now.toDateString();
+        const dayOk = booking.day && new Date(booking.day).setHours(0,0,0,0) >= new Date(now).setHours(0,0,0,0) && timesFor(sameDay ? now : booking.day).length;
+        botSay(s().slotGone);
+        if (dayOk) return ask(steps().findIndex(x => x.key === "time"));
+        booking.data.day = null; booking.day = null; booking.needTime = true; return ask(steps().findIndex(x => x.key === "day"));
+      }
       if ([S.en.confirm, S.bg.confirm, "yes", "ok", "да", "добре"].some(w => t === norm(w))) {
         const vals = {}; steps().forEach(st => vals[st.key] = valueText(st.key));
         vals.day = (lang === "bg" || /^(Today|Tomorrow)$/.test(vals.day)) ? vals.day.toLowerCase() : vals.day;
@@ -510,6 +561,9 @@
     const wantsBooking = [...C.en.booking.triggers, ...C.bg.booking.triggers, "запиш", "записв", "booking"].some(w => has(t, w)) || word(t, "час");
     const aboutExisting = ["cancel","reschedul","move my","change my","postpone","отказ","откаж","отмен","премест","промен"].some(w => has(t, w));   // "cancel my appointment" is not a new booking
     if (wantsBooking && !isQuestion(raw) && !aboutExisting) { booking = { data: {} }; fails = 0; return ask(0); }
+    const g = norm(raw).replace(/[^\p{L} ]/gu, "").trim();
+    if (/^(hi|hello|hey|hiya|good (morning|afternoon|evening)|здравей|здравейте|здрасти|здрасче|добър ден|добро утро|добър вечер|ало|хей|zdravei|zdraveite|zdrasti)( there| all)?$/.test(g)) { botSay(s().hello); return setChips(); }
+    if (/^(ok|okay|oki|kk|ок|окей|добре|разбрах|got it|alright|cool)$/.test(g)) { botSay(s().ack); return setChips(); }
     if (answerFree(raw, false)) { misses = 0; return setChips(); }
     if (wantsBooking && !aboutExisting) { booking = { data: {} }; fails = 0; return ask(0); }
     botSay(fill(s().unknown, { phone: PHONE_[lang] }));
