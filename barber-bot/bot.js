@@ -151,7 +151,9 @@
   }
   const PRIVATE = ["card number","card no","card details","cvv","cvc","iban","pin code","password","passport number","егн","номер на карта","данни на карта","парола","номер на паспорт","лична карта"];
   const isPrivate = raw => { const t = norm(raw); return PRIVATE.some(k => t.includes(k)) || (t.match(/\d[\d \-]*\d/g) || []).some(m => m.replace(/\D/g, "").length >= 14); };
-  const HUMAN = ["are you human","are you a human","are you real","real person","are you a person","are you a bot","are you a robot","talk to a human","човек ли","истински човек","бот ли","робот ли","жив човек","с човек","човек си"];
+  const HUMAN = ["are you human","are you a human","are you real","real person","are you a person","are you a bot","are you a robot","talk to a human","човек ли","истински човек","бот ли","робот ли","жив човек","с човек","човек си",
+    "who replies","who is replying","who answers","who is answering","who am i talking","who am i chatting","who is this","who are you","is anyone there","anybody there",
+    "кой отговаря","кой ми отговаря","кой ми пише","кой пише","с кого говоря","с кого си пиша","кой си ти","кой сте вие"];
   const HUMAN_W = ["bot","robot","human","chatgpt","ai","бот","робот","изкуствен интелект"];
   const isHuman = q => HUMAN.some(k => q.includes(k)) || HUMAN_W.some(w => word(q, w));
   // things that are never in any config: say so instead of matching a loosely related FAQ
