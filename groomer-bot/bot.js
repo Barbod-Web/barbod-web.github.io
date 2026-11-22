@@ -101,6 +101,7 @@
     $(".db-title").textContent = T.name; $(".db-tag").textContent = T.tagline;
     input.placeholder = T.placeholder; $(".db-send").textContent = T.send;
     box.querySelectorAll(".db-lang button").forEach(b => b.classList.toggle("on", b.dataset.l === lang));
+    if (typeof window.onBotLang === "function") window.onBotLang(lang);
     if (reset) { msgs.innerHTML = ""; booking = null; botSay(T.greeting, 100); setChips(); }
   }
   box.querySelectorAll(".db-lang button").forEach(b => b.onclick = () => { if (b.dataset.l !== lang) { lang = b.dataset.l; render(true); } });
