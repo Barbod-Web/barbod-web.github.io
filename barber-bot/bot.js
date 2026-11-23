@@ -133,16 +133,14 @@
   const unConfuse = t => t.replace(/[\u0370-\u03ff\u0192\u1d00-\u1d2b\ua730-\ua731\u0280\u028f\u0299\u029c\u029f\u0262\u026a\u0274]/g, c => CONFUS[c] || c)
     .normalize("NFD").replace(/([a-z])[\u0300-\u036f]+/g, "$1").normalize("NFC");
   // "pi-shka", "p.i.s.h.k.a", "fu ck": letters split by punctuation inside one word, or short chunks split by spaces
+  const COMMON_W = ["who","you","the","and","are","can","how","why","for","not","but","all","any","get","has","had","her","him","his","its","may","new","now","old","one","our","out","see","two","way","was","did","does","let","put","say","she","too","use","yes","what","kak","кой","кое","коя","как","има","ние","вие","още","сега","без","при","ако","кога"];
   function squash(t) {
     const out = [];
     for (const w of t.split(/\s+/).filter(Boolean)) out.push(w.replace(/[^\p{L}\d*@$!]+/gu, ""));
-    const res = [], run = [];
-    for (const w of out) { if (w.length && w.length <= 2) run.push(w); else { if (run.length > 1) res.push(run.join("")); run.length = 0; if (w) res.push(w); } }
-    if (run.length > 1) res.push(run.join(""));
-    return res.join(" ");
+    return out.filter(Boolean).join(" ");
   }
   function abusiveText(t) {
-    t = t.replace(/(^|[^\p{L}])(shitzu|shitsu|shiitake|scunthorpe)(?=$|[^\p{L}])/gu, "$1");   // dog breed typed as "shitzu", etc.
+    t = t.replace(/(^|[^\p{L}])(shitzu|shitsu|shiitake|scunthorpe|shitov|shitova)(?=$|[^\p{L}])/gu, "$1").replace(/(^|[^\p{L}])cock(?=\s+spaniel)/gu, "$1cocker");   // dog breed typed as "shitzu", etc.
     if (BAD_STEMS.some(w => has(t, w)) || BAD_WORDS.some(w => word(t, w))) return true;
     // per word (so "a bit cheaper", "who really", "wash it" are fine), plus runs of single letters ("f u c k")
     const toks = t.replace(/[013457@$!]/g, c => LEET[c]).split(/[^\p{L}*]+/u).filter(Boolean);
@@ -168,12 +166,19 @@
       if (abusiveText(v)) return true;
       if (/[a-z]/.test(v) && abusiveText(translit(v))) return true;
     }
-    // two short pieces that only together make a swear word: "bi tch", "пи шка"
-    const ws = t.split(/[^\p{L}]+/u).filter(Boolean);
-    for (let i = 0; i + 1 < ws.length; i++) {
-      if (ws[i].length > 3 || ws[i + 1].length > 3) continue;
-      const j = ws[i] + ws[i + 1];
-      if (BAD_COMPACT.some(b => j.startsWith(b) || (/[a-z]/.test(j) && translit(j).startsWith(b)))) return true;
+    // 2-6 short pieces split by spaces that together spell exactly a swear word: "bi tch", "пи шка", "fu ck", "p i s h k a".
+    // Exact match only (so "Ху Ян" is fine), and not when a piece is a common whole word ("who re does it").
+    const ws = squash(t).split(" ").map(w => w.replace(/[013457@$!]/g, c => LEET[c])).filter(Boolean);
+    const dd = x => x.replace(/(\p{L})\1+/gu, "$1");
+    const BADX = BAD_COMPACT.map(dd);
+    for (let i = 0; i < ws.length; i++) {
+      for (let n = 2; n <= 6 && i + n <= ws.length; n++) {
+        const pc = ws.slice(i, i + n);
+        if (pc.some(w => w.length > 3)) break;
+        if (pc.some(w => COMMON_W.includes(w))) continue;
+        const j = dd(pc.join(""));
+        if (BADX.includes(j) || (/^[a-z]+$/.test(j) && BADX.includes(dd(translit(j))))) return true;
+      }
     }
     return false;
   }
@@ -352,9 +357,10 @@
     const t = raw.trim().replace(/\s+/g, " ").replace(/^(my name is|my name's|name is|name:|i am|i'm|im|it's|it is|this is|казвам се|името ми е|аз съм|име:)\s+/i, "");
     if (t.toLowerCase().split(/[ ,]+/).some(w => NOT_NAME.includes(w))) return null;
     if (t.length < 2 || t.length > (pet ? 60 : 40)) return null;
-    if (!(pet ? /^[\p{L}][\p{L} '.,&-]*$/u : /^[\p{L}][\p{L} '.-]*$/u).test(t)) return null;
-    if (/[^\p{Script=Latin}\p{Script=Cyrillic} '.,&-]/u.test(t) || /[\u1d00-\u1d2b\ua730-\ua731\u0280-\u02af\u0192]/.test(t)) return null;   // Greek look-alikes, small caps
-    if (t.split(/[ .,-]+/).filter(w => w.length === 1).length >= 3) return null;      // "p i s h k a"
+    if (!(pet ? /^[\p{L}][\p{L}\p{M} '’.,&-]*$/u : /^[\p{L}][\p{L}\p{M} '’.-]*$/u).test(t)) return null;
+    const scripts = w => [/\p{Script=Latin}/u, /\p{Script=Cyrillic}/u, /\p{Script=Greek}/u].filter(r => r.test(w)).length;
+    if (t.split(/[ .,&'’-]+/).some(w => scripts(w) > 1) || /[\u1d00-\u1d2b\ua730-\ua731\u0280-\u02af\u0192]/.test(t)) return null;   // look-alike letters mixed into one word, small caps
+    if (t.split(" ").filter(w => w.length === 1 && !["и","&","a","y","e"].includes(w.toLowerCase())).length >= 3) return null;      // "p i s h k a" (initials with dots like "J. R. R." are fine)
     if (/(\p{L})\1\1/iu.test(t)) return null;              // "aaaa", "ккк"
     if (t.split(" ").length > (pet ? 7 : 4)) return null;
     if (isAbusive(t)) return null;
